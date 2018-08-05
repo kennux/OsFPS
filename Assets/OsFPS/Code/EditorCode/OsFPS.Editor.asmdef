@@ -1,0 +1,14 @@
+{
+    "name": "OsFPS.Editor",
+    "references": [
+        "UnityTK",
+        "UnityTK.Editor",
+        "OsFPS"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

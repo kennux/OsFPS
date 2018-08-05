@@ -1,0 +1,262 @@
+fileFormatVersion: 2
+guid: 9cb21ec9ec60cc941a20ceecfc7d0b2a
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Armature
+    100002: Barrel
+    100004: FPS_Hands
+    100006: Gun
+    100008: //RootNode
+    100010: Hammer
+    100012: Hand_L
+    100014: Hand_R
+    100016: Index1_L
+    100018: Index1_R
+    100020: Index2_l
+    100022: Index2_r
+    100024: Index3_L
+    100026: Index3_R
+    100028: LowerArm_L
+    100030: LowerArm_R
+    100032: Magazine
+    100034: Middle1_L
+    100036: Middle1_R
+    100038: Middle2_L
+    100040: Middle2_R
+    100042: Middle3_l
+    100044: Middle3_r
+    100046: Pinky1_L
+    100048: Pinky1_R
+    100050: Pinky2_L
+    100052: Pinky2_R
+    100054: Pinky3_L
+    100056: Pinky3_R
+    100058: Ring1_L
+    100060: Ring1_R
+    100062: Ring2_L
+    100064: Ring2_R
+    100066: Ring3_L
+    100068: Ring3_R
+    100070: Root
+    100072: Slide
+    100074: Thumb1_L
+    100076: Thumb1_R
+    100078: Thumb2_L
+    100080: Thumb2_R
+    100082: Thumb3_L
+    100084: Thumb3_R
+    100086: Trigger
+    100088: UpperArm_L
+    100090: UpperArm_R
+    400000: Armature
+    400002: Barrel
+    400004: FPS_Hands
+    400006: Gun
+    400008: //RootNode
+    400010: Hammer
+    400012: Hand_L
+    400014: Hand_R
+    400016: Index1_L
+    400018: Index1_R
+    400020: Index2_l
+    400022: Index2_r
+    400024: Index3_L
+    400026: Index3_R
+    400028: LowerArm_L
+    400030: LowerArm_R
+    400032: Magazine
+    400034: Middle1_L
+    400036: Middle1_R
+    400038: Middle2_L
+    400040: Middle2_R
+    400042: Middle3_l
+    400044: Middle3_r
+    400046: Pinky1_L
+    400048: Pinky1_R
+    400050: Pinky2_L
+    400052: Pinky2_R
+    400054: Pinky3_L
+    400056: Pinky3_R
+    400058: Ring1_L
+    400060: Ring1_R
+    400062: Ring2_L
+    400064: Ring2_R
+    400066: Ring3_L
+    400068: Ring3_R
+    400070: Root
+    400072: Slide
+    400074: Thumb1_L
+    400076: Thumb1_R
+    400078: Thumb2_L
+    400080: Thumb2_R
+    400082: Thumb3_L
+    400084: Thumb3_R
+    400086: Trigger
+    400088: UpperArm_L
+    400090: UpperArm_R
+    2100000: Mat_HK45
+    2100002: Mat_FPSHands
+    2300000: Barrel
+    2300002: Gun
+    2300004: Hammer
+    2300006: Magazine
+    2300008: Slide
+    2300010: Trigger
+    3300000: Barrel
+    3300002: Gun
+    3300004: Hammer
+    3300006: Magazine
+    3300008: Slide
+    3300010: Trigger
+    4300000: Gun
+    4300002: Barrel
+    4300004: Trigger
+    4300006: Hammer
+    4300008: Slide
+    4300010: Magazine
+    4300012: FPS_Hands
+    7400000: Shoot
+    7400002: Reload
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: FPS_Hands
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Shoot
+      takeName: Scene
+      firstFrame: 1
+      lastFrame: 12
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Reload
+      takeName: Scene
+      firstFrame: 13
+      lastFrame: 70
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
