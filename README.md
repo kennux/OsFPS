@@ -27,7 +27,7 @@ You can just clone the repository, copy the project, use it as your project and 
 # What can i do with it?
 
 Whatever you want essentially!
-Use it for prototyping, fork it and contribute to development, use it for eduction.
+Use it for prototyping, fork it and contribute to development, use it for education.
 
 It is up to you :>
 
