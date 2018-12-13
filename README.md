@@ -2,7 +2,7 @@
 # What is this?
 
 Open-source first person shooter engine for Unity3D.
-Originally developed as game prototype, later on stripped of properitary assets and refactored to use UnityTK.
+Originally developed as game prototype, later on stripped of propreitary assets and refactored to use UnityTK.
 
 This project is targeted at people who can read and write code, its not a game-ready drag&drop FPS engine (nor is there any end-user documentation)!
 If you are looking for an easy to use drag&drop fps system i highly recommend the great uFPS unity asset.
