@@ -79,6 +79,70 @@ namespace UnityTK.Prototypes
 			return bool.Parse(value);
 		}
 	}
+	
+	public class PrototypeSerializer_Vector2 : ValueTypePrototypeSerializer<Vector2>
+	{
+		protected override Vector2 _Deserialize(string value, PrototypeParserState state)
+		{
+			string[] parts = value.Split(',');
+			if (parts.Length < 2)
+				throw new FormatException("Malformed vector2 data " + value + " - Format: (x,y - . as decimal delimiter)");
+
+			return new Vector2(float.Parse(parts[0], CultureInfo.InvariantCulture), float.Parse(parts[1], CultureInfo.InvariantCulture));
+		}
+	}
+	
+	public class PrototypeSerializer_Vector3 : ValueTypePrototypeSerializer<Vector3>
+	{
+		protected override Vector3 _Deserialize(string value, PrototypeParserState state)
+		{
+			string[] parts = value.Split(',');
+			if (parts.Length < 3)
+				throw new FormatException("Malformed vector3 data " + value + " - Format: (x,y,z - . as decimal delimiter)");
+
+			return new Vector3(float.Parse(parts[0], CultureInfo.InvariantCulture), float.Parse(parts[1], CultureInfo.InvariantCulture),
+				float.Parse(parts[2], CultureInfo.InvariantCulture));
+		}
+	}
+	
+	public class PrototypeSerializer_Vector4 : ValueTypePrototypeSerializer<Vector4>
+	{
+		protected override Vector4 _Deserialize(string value, PrototypeParserState state)
+		{
+			string[] parts = value.Split(',');
+			if (parts.Length < 4)
+				throw new FormatException("Malformed vector4 data " + value + " - Format: (x,y,z,w - . as decimal delimiter)");
+
+			return new Vector4(float.Parse(parts[0], CultureInfo.InvariantCulture), float.Parse(parts[1], CultureInfo.InvariantCulture),
+				float.Parse(parts[2], CultureInfo.InvariantCulture), float.Parse(parts[3], CultureInfo.InvariantCulture));
+		}
+	}
+	
+	public class PrototypeSerializer_Color : ValueTypePrototypeSerializer<Color>
+	{
+		protected override Color _Deserialize(string value, PrototypeParserState state)
+		{
+			string[] parts = value.Split(',');
+			if (parts.Length < 4)
+				throw new FormatException("Malformed color data " + value + " - Format: (x,y,z,w - . as decimal delimiter)");
+
+			return new Color(float.Parse(parts[0], CultureInfo.InvariantCulture), float.Parse(parts[1], CultureInfo.InvariantCulture),
+				float.Parse(parts[2], CultureInfo.InvariantCulture), float.Parse(parts[3], CultureInfo.InvariantCulture));
+		}
+	}
+	
+	public class PrototypeSerializer_Quaternion : ValueTypePrototypeSerializer<Quaternion>
+	{
+		protected override Quaternion _Deserialize(string value, PrototypeParserState state)
+		{
+			string[] parts = value.Split(',');
+			if (parts.Length < 4)
+				throw new FormatException("Malformed quaternion data " + value + " - Format: (x,y,z,w - . as decimal delimiter)");
+
+			return new Quaternion(float.Parse(parts[0], CultureInfo.InvariantCulture), float.Parse(parts[1], CultureInfo.InvariantCulture),
+				float.Parse(parts[2], CultureInfo.InvariantCulture), float.Parse(parts[3], CultureInfo.InvariantCulture));
+		}
+	}
 
 	public class PrototypeSerializer_Enum : IPrototypeDataSerializer
 	{

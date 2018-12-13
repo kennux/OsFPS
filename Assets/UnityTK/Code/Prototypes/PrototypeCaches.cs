@@ -13,7 +13,7 @@ namespace UnityTK.Prototypes
 	/// This will generate a type and serializer cache when <see cref="LazyInit"/> is called.
 	/// LazyInit can be called whenever this is about to be accessed in order to make sure the prototype cache is ready.
 	/// </summary>
-	internal static class PrototypeCaches
+	public static class PrototypeCaches
 	{
 		private static List<IPrototypeDataSerializer> serializers = new List<IPrototypeDataSerializer>();
 		private static Dictionary<Type, SerializableTypeCache> typeCache = new Dictionary<Type, SerializableTypeCache>();

@@ -9,7 +9,7 @@ namespace UnityTK.Prototypes
 	/// <summary>
 	/// TODO: Actual caching :>
 	/// </summary>
-	class SerializableTypeCache
+	public class SerializableTypeCache
 	{
 		public class FieldCache
 		{

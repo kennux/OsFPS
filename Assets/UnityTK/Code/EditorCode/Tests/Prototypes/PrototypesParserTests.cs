@@ -37,10 +37,15 @@ namespace UnityTK.Test.Prototypes
 		public string name;
 		public float someRate;
 		public int someInt;
+		public Vector2 vec2;
+		public Vector3 vec3;
+		public Vector4 vec4;
+		public Quaternion quat;
 		public TestPrototype someOtherPrototype = null;
 		public Type type = null;
 		public TestStruct _struct;
 		public TestBase testBase;
+		public Color color;
 		
 		public TestBase[] array;
 		public List<TestBase> list;
@@ -98,6 +103,11 @@ namespace UnityTK.Test.Prototypes
 				"	<Prototype Id=\"Test\">\n" +
 				"		<someRate>2.5</someRate>\n" +
 				"		<someInt>5</someInt>\n" +
+				"		<vec2>5.1,2.5</vec2>\n" +
+				"		<vec3>2.5,5.1,9</vec3>\n" +
+				"		<vec4>9,2.5,5,1.25</vec4>\n" +
+				"		<quat>9,2.5,5,1.25</quat>\n" +
+				"		<color>0.25,1,0.5,1</color>\n" +
 				"	</Prototype>\n" +
 				"</PrototypeContainer>";
 			
@@ -115,6 +125,11 @@ namespace UnityTK.Test.Prototypes
 			
 			Assert.AreEqual(2.5f, (prototypes[0] as TestPrototype).someRate);
 			Assert.AreEqual(5f, (prototypes[0] as TestPrototype).someInt);
+			Assert.AreEqual(new Vector2(5.1f, 2.5f), (prototypes[0] as TestPrototype).vec2);
+			Assert.AreEqual(new Vector3(2.5f, 5.1f, 9), (prototypes[0] as TestPrototype).vec3);
+			Assert.AreEqual(new Vector4(9, 2.5f, 5, 1.25f), (prototypes[0] as TestPrototype).vec4);
+			Assert.AreEqual(new Quaternion(9, 2.5f, 5, 1.25f), (prototypes[0] as TestPrototype).quat);
+			Assert.AreEqual(new Color(0.25f, 1f, 0.5f, 1f), (prototypes[0] as TestPrototype).color);
         }
 
         [Test]
