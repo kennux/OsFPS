@@ -3,7 +3,7 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 
-namespace UnityTK.Test
+namespace UnityTK.Test.Utility
 {
     public class OrderedEventTests
     {

@@ -123,7 +123,7 @@ namespace UnityTK.DataBinding
         /// <returns>A string with format {0} - {1} with 0 = base.ToString(), 1 = this.boundType.ToString()</returns>
         public override string ToString()
         {
-            return string.Format("{0} - {1}", base.ToString(), this.boundType);
+            return string.Format("{0} - {1}", base.ToString(), this.boundType.Name);
         }
     }
 }
