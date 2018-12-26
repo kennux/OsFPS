@@ -17,13 +17,25 @@ namespace OsFPS
     {
         public static HUD instance { get { return UnitySingleton<HUD>.Get(); } }
 
-        [Header("Health")]
-        public Text healthText;
-        public Image healthFill;
+		public string HealthText
+		{
+			get { return string.Format("{0} / {1}", LocalPlayer.health.ToString("0"), LocalPlayer.maxHealth.ToString("0")); }
+		}
 
-        [Header("Ammo")]
-        public Text ammoInClipText;
-        public Text ammoText;
+		public float HealthFill
+		{
+			get { return LocalPlayer.health / LocalPlayer.maxHealth; }
+		}
+
+		public string AmmoInClipText
+		{
+			get { return LocalPlayer.GetCurrentWeaponAmmoInClip().ToString(); }
+		}
+
+		public string AmmoText
+		{
+			get { return LocalPlayer.GetCurrentWeaponAmmo().ToString(); }
+		}
 
         [Header("Reticle")]
         public Image reticle;
@@ -47,22 +59,17 @@ namespace OsFPS
 
         public void Update()
         {
-            // Health
-            this.healthText.text = LocalPlayer.health.ToString("0.0") + " / " + LocalPlayer.maxHealth.ToString();
-            this.healthFill.fillAmount = LocalPlayer.health / LocalPlayer.maxHealth;
-
-            // Ammo
-            this.ammoInClipText.text = LocalPlayer.GetCurrentWeaponAmmoInClip().ToString();
-            this.ammoText.text = LocalPlayer.GetCurrentWeaponAmmo().ToString();
-
-            // Reticle
-            this.reticle.gameObject.SetActive(true);
+			// Reticle
+			bool reticleActive = true;
             switch (this.reticleState)
             {
                 case ReticleState.Crosshair: this.reticle.sprite = this.crosshairReticle; break;
                 case ReticleState.Interaction: this.reticle.sprite = this.interactReticle; break;
-                case ReticleState.None: this.reticle.gameObject.SetActive(false); break;
+                case ReticleState.None: reticleActive = false; break;
             }
+
+			if (this.reticle.gameObject.activeSelf != reticleActive)
+				this.reticle.gameObject.SetActive(reticleActive);
         }
     }
 }
