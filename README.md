@@ -39,14 +39,13 @@ It is up to you :>
 - Procedural animation system (for recoil, external forces, movement, idle, ....)
 - Damage handling (Entity damage and physical forces)
 - Interaction system with interactable objects
-- A lot other small cool features
+- A lot other small features
 
 ## Todo
 
 There is quite a lot to do, there is room for lots of cool features!
 I think the most important todos are:
 
-- Get rid of memory allocations in updates
 - Melee weapons
 - 3rd Person view
 - AI Controllers
