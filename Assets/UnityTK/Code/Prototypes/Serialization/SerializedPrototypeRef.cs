@@ -11,13 +11,13 @@ namespace UnityTK.Prototypes
 {
 	class SerializedPrototypeReference
 	{
-		public string name;
+		public string identifier;
 
 		public IPrototype Resolve(List<IPrototype> prototypes)
 		{
 			foreach (var p in prototypes)
 			{
-				if (string.Equals(p.identifier, this.name))
+				if (string.Equals(p.identifier, this.identifier))
 					return p;
 			}
 

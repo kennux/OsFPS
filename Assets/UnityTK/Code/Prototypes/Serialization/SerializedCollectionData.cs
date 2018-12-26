@@ -141,7 +141,7 @@ namespace UnityTK.Prototypes
 					// Prototype ref
 					this.elements.Add(new SerializedPrototypeReference()
 					{
-						name = xElementNode.Value
+						identifier = xElementNode.Value
 					});
 				}
 				else
@@ -154,7 +154,7 @@ namespace UnityTK.Prototypes
 					var classAttrib = xElementNode.Attribute(PrototypeParser.PrototypeAttributeType);
 					if (!ReferenceEquals(classAttrib, null))
 					{
-						serializableTypeCache = PrototypeCaches.LookupSerializableTypeCache(classAttrib.Value, state.parameters.standardNamespace);
+						serializableTypeCache = PrototypeCaches.GetSerializableTypeCacheFor(classAttrib.Value, state.parameters.standardNamespace);
 						typeName = classAttrib.Value;
 					}
 
@@ -162,8 +162,8 @@ namespace UnityTK.Prototypes
 					// Field not serializable?
 					if (ReferenceEquals(serializableTypeCache, null))
 					{
-						// TODO: Line number
-						errors.Add(new ParsingError(ParsingErrorSeverity.ERROR, filename, -1, "Collection element with unknown type " + typeName + " - unknown by the serializer cache! Are you missing " + nameof(PrototypeDataSerializableAttribute) + " attribute? Skipping field!"));
+						// TODO: Line number, better reporting as to why this type is unserializable!
+						errors.Add(new ParsingError(ParsingErrorSeverity.ERROR, filename, -1, "Collection element with unknown type " + typeName + " unserializable! Skipping field!"));
 						continue;
 					}
 

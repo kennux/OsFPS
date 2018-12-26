@@ -52,8 +52,6 @@ namespace UnityTK.Prototypes
 		/// <returns></returns>
 		public void Parse(string xmlContent, string filename, PrototypeParseParameters parameters)
 		{
-			PrototypeCaches.LazyInit();
-
 			// Pre-parse data
 			var data = new List<SerializedData>();
 			_PreParse(xmlContent, filename, ref parameters, data);
@@ -68,7 +66,6 @@ namespace UnityTK.Prototypes
 		/// </summary>
 		public void Parse(string[] xmlContents, string[] filenames, PrototypeParseParameters parameters)
 		{
-			PrototypeCaches.LazyInit();
 			List<SerializedData> data = new List<SerializedData>();
 
 			if (xmlContents.Length != filenames.Length)
@@ -96,7 +93,7 @@ namespace UnityTK.Prototypes
 				
 			// Get type
 			XAttribute typeAttribute = xElement.Attribute(PrototypeContainerAttributeType);
-			var type = LookupSerializableTypeCache(typeAttribute.Value, ref parameters);
+			var type = GetSerializableTypeCacheFor(typeAttribute.Value, ref parameters);
 			if (!ParsingValidation.TypeFound(xElement, typeAttribute, type, filename, errors))
 				return;
 
@@ -115,7 +112,7 @@ namespace UnityTK.Prototypes
 				var elementTypeAttribute = nodeXElement.Attribute(PrototypeContainerAttributeType);
 				if (!ReferenceEquals(elementTypeAttribute, null))
 				{
-					elementType = LookupSerializableTypeCache(elementTypeAttribute.Value, ref parameters);
+					elementType = GetSerializableTypeCacheFor(elementTypeAttribute.Value, ref parameters);
 					if (!ParsingValidation.TypeFound(nodeXElement, elementTypeAttribute, elementType, filename, errors))
 						continue;
 				}
@@ -199,7 +196,7 @@ namespace UnityTK.Prototypes
 			foreach (var d in data)
 				d.ResolveReferenceFields(this.prototypes, errors, state);
 
-			// Step 5 - Final data apply
+			// Step 4 - Final data apply
 			List<SerializedData> inheritingFromTmp = new List<SerializedData>();
 			foreach (var d in sorted)
 			{
@@ -237,14 +234,14 @@ namespace UnityTK.Prototypes
 				d.ApplyTo(instances[d], errors, state);
 			}
 
-			// Step 6 - record serialized data in result
+			// Step 5 - record serialized data in result
 			foreach (var kvp in idMapping)
 				this.serializedData.Add(kvp.Key, kvp.Value);
 		}
 
-		private static SerializableTypeCache LookupSerializableTypeCache(string name, ref PrototypeParseParameters parameters)
+		private static SerializableTypeCache GetSerializableTypeCacheFor(string name, ref PrototypeParseParameters parameters)
 		{
-			return PrototypeCaches.LookupSerializableTypeCache(name, parameters.standardNamespace);
+			return PrototypeCaches.GetSerializableTypeCacheFor(name, parameters.standardNamespace);
 		}
 	}
 }

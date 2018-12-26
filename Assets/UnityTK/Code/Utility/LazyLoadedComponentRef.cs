@@ -17,7 +17,7 @@ namespace UnityTK
 
         public T Get(Component comp, bool checkParents = false, bool checkChildren = false)
         {
-            if (!object.ReferenceEquals(comp, this._checked))
+            if (!ReferenceEquals(comp, this._checked))
             {
                 this.obj = comp.GetComponent<T>();
 

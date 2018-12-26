@@ -15,20 +15,17 @@ namespace UnityTK.Test.Prototypes
 	
 	public class TestPrototype : IPrototype
 	{
-		[PrototypeDataSerializable]
 		public struct TestStruct
 		{
 			public int test;
 			public int test2;
 		}
 		
-		[PrototypeDataSerializable]
 		public class TestBase
 		{
 			public string baseStr;
 		}
 		
-		[PrototypeDataSerializable]
 		public class SpecializedClass : TestBase
 		{
 			public int lul;
@@ -667,6 +664,156 @@ namespace UnityTK.Test.Prototypes
 			Assert.AreEqual(2, prototypes.Count);
 			
 			var collection = (prototypes[0] as TestPrototype).list;
+			Assert.AreEqual(2, collection.Count);
+			Assert.AreEqual("teststr1", collection[0].baseStr);
+			Assert.AreEqual("teststr2", collection[1].baseStr);
+			Assert.AreEqual(10, (collection[1] as TestPrototype.SpecializedClass).lul);
+			
+			collection = (prototypes[1] as TestPrototype).list;
+			Assert.AreEqual(4, collection.Count);
+			Assert.AreEqual("teststr1", collection[0].baseStr);
+			Assert.AreEqual("teststr2", collection[1].baseStr);
+			Assert.AreEqual("teststr3", collection[2].baseStr);
+			Assert.AreEqual("teststr4", collection[3].baseStr);
+			Assert.AreEqual(10, (collection[1] as TestPrototype.SpecializedClass).lul);
+			Assert.AreEqual(11, (collection[3] as TestPrototype.SpecializedClass).lul);
+        }
+
+        [Test]
+        public void ParserTestImplicitCombineCollectionsArray()
+        {
+			string xml = "<PrototypeContainer Type=\"TestPrototype\">\n" +
+				"	<Prototype Id=\"Test\">\n" +
+				"		<array>\n" +
+				"			<li>\n" +
+				"				<baseStr>teststr1</baseStr>\n" +
+				"			</li>\n" +
+				"			<li Type=\"SpecializedClass\">\n" +
+				"				<baseStr>teststr2</baseStr>\n" +
+				"				<lul>10</lul>\n" +
+				"			</li>\n" +
+				"		</array>\n" +
+				"	</Prototype>\n" +
+				"	<Prototype Id=\"Test2\" Inherits=\"Test\">\n" +
+				"		<array>\n" +
+				"			<li>\n" +
+				"				<baseStr>teststr3</baseStr>\n" +
+				"			</li>\n" +
+				"			<li Type=\"SpecializedClass\">\n" +
+				"				<baseStr>teststr4</baseStr>\n" +
+				"				<lul>11</lul>\n" +
+				"			</li>\n" +
+				"		</array>\n" +
+				"	</Prototype>\n" +
+				"	<Prototype Id=\"Test3\">\n" +
+				"	</Prototype>\n" +
+				"	<Prototype Id=\"Test4\" ParentName=\"Test3\">\n" +
+				"		<array>\n" +
+				"			<li>\n" +
+				"				<baseStr>teststr1</baseStr>\n" +
+				"			</li>\n" +
+				"			<li Type=\"SpecializedClass\">\n" +
+				"				<baseStr>teststr2</baseStr>\n" +
+				"				<lul>10</lul>\n" +
+				"			</li>\n" +
+				"		</array>\n" +
+				"	</Prototype>\n" +
+				"</PrototypeContainer>";
+			
+			var parser = new PrototypeParser();
+			parser.Parse(xml, "DIRECT PARSE", new PrototypeParseParameters()
+			{
+				standardNamespace = "UnityTK.Test.Prototypes"
+			});
+			var prototypes = parser.GetPrototypes();
+			var errors = parser.GetParsingErrors();
+
+			foreach (var error in errors)
+				throw new Exception(error.GetFullMessage());
+			Assert.AreEqual(4, prototypes.Count);
+			
+			var collection = (prototypes[0] as TestPrototype).array;
+			Assert.AreEqual(2, collection.Length);
+			Assert.AreEqual("teststr1", collection[0].baseStr);
+			Assert.AreEqual("teststr2", collection[1].baseStr);
+			Assert.AreEqual(10, (collection[1] as TestPrototype.SpecializedClass).lul);
+			
+			collection = (prototypes[3] as TestPrototype).array;
+			Assert.AreEqual(2, collection.Length);
+			Assert.AreEqual("teststr1", collection[0].baseStr);
+			Assert.AreEqual("teststr2", collection[1].baseStr);
+			Assert.AreEqual(10, (collection[1] as TestPrototype.SpecializedClass).lul);
+			
+			collection = (prototypes[1] as TestPrototype).array;
+			Assert.AreEqual(4, collection.Length);
+			Assert.AreEqual("teststr1", collection[0].baseStr);
+			Assert.AreEqual("teststr2", collection[1].baseStr);
+			Assert.AreEqual("teststr3", collection[2].baseStr);
+			Assert.AreEqual("teststr4", collection[3].baseStr);
+			Assert.AreEqual(10, (collection[1] as TestPrototype.SpecializedClass).lul);
+			Assert.AreEqual(11, (collection[3] as TestPrototype.SpecializedClass).lul);
+        }
+
+        [Test]
+        public void ParserTestImplicitCombineCollectionsList()
+        {
+			string xml = "<PrototypeContainer Type=\"TestPrototype\">\n" +
+				"	<Prototype Id=\"Test\">\n" +
+				"		<list>\n" +
+				"			<li>\n" +
+				"				<baseStr>teststr1</baseStr>\n" +
+				"			</li>\n" +
+				"			<li Type=\"SpecializedClass\">\n" +
+				"				<baseStr>teststr2</baseStr>\n" +
+				"				<lul>10</lul>\n" +
+				"			</li>\n" +
+				"		</list>\n" +
+				"	</Prototype>\n" +
+				"	<Prototype Id=\"Test2\" Inherits=\"Test\">\n" +
+				"		<list>\n" +
+				"			<li>\n" +
+				"				<baseStr>teststr3</baseStr>\n" +
+				"			</li>\n" +
+				"			<li Type=\"SpecializedClass\">\n" +
+				"				<baseStr>teststr4</baseStr>\n" +
+				"				<lul>11</lul>\n" +
+				"			</li>\n" +
+				"		</list>\n" +
+				"	</Prototype>\n" +
+				"	<Prototype Id=\"Test3\">\n" +
+				"	</Prototype>\n" +
+				"	<Prototype Id=\"Test4\" ParentName=\"Test3\">\n" +
+				"		<list>\n" +
+				"			<li>\n" +
+				"				<baseStr>teststr1</baseStr>\n" +
+				"			</li>\n" +
+				"			<li Type=\"SpecializedClass\">\n" +
+				"				<baseStr>teststr2</baseStr>\n" +
+				"				<lul>10</lul>\n" +
+				"			</li>\n" +
+				"		</list>\n" +
+				"	</Prototype>\n" +
+				"</PrototypeContainer>";
+			
+			var parser = new PrototypeParser();
+			parser.Parse(xml, "DIRECT PARSE", new PrototypeParseParameters()
+			{
+				standardNamespace = "UnityTK.Test.Prototypes"
+			});
+			var prototypes = parser.GetPrototypes();
+			var errors = parser.GetParsingErrors();
+
+			foreach (var error in errors)
+				throw new Exception(error.GetFullMessage());
+			Assert.AreEqual(4, prototypes.Count);
+			
+			var collection = (prototypes[0] as TestPrototype).list;
+			Assert.AreEqual(2, collection.Count);
+			Assert.AreEqual("teststr1", collection[0].baseStr);
+			Assert.AreEqual("teststr2", collection[1].baseStr);
+			Assert.AreEqual(10, (collection[1] as TestPrototype.SpecializedClass).lul);
+			
+			collection = (prototypes[3] as TestPrototype).list;
 			Assert.AreEqual(2, collection.Count);
 			Assert.AreEqual("teststr1", collection[0].baseStr);
 			Assert.AreEqual("teststr2", collection[1].baseStr);

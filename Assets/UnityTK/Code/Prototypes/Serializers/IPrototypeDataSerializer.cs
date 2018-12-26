@@ -9,7 +9,6 @@ namespace UnityTK.Prototypes
 {
 	/// <summary>
 	/// These serializers are used by <see cref="PrototypeParser"/> in order to serialize data types.
-	/// <see cref="PrototypeDataSerializableAttribute"/>
 	/// </summary>
 	public interface IPrototypeDataSerializer
 	{

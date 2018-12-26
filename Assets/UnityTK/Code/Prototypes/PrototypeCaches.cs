@@ -15,9 +15,9 @@ namespace UnityTK.Prototypes
 	/// </summary>
 	public static class PrototypeCaches
 	{
-		private static List<IPrototypeDataSerializer> serializers = new List<IPrototypeDataSerializer>();
+		private static List<IPrototypeDataSerializer> serializers;
 		private static Dictionary<Type, SerializableTypeCache> typeCache = new Dictionary<Type, SerializableTypeCache>();
-		private static bool wasInitialized = false;
+		private static Type[] allTypes = null;
 
 		/// <summary>
 		/// Returns the best known data serializer for the specified type.
@@ -27,6 +27,20 @@ namespace UnityTK.Prototypes
 		/// <returns>Null if not found, the serializer otherwise.</returns>
 		public static IPrototypeDataSerializer GetBestSerializerFor(Type type)
 		{
+			if (ReferenceEquals(serializers, null))
+			{
+				serializers = new List<IPrototypeDataSerializer>();
+				LazyAllTypesInit();
+				
+				int len = allTypes.Length;
+				for (int i = 0; i < len; i++)
+				{
+					Type t = allTypes[i];
+					if (t.IsClass && !t.IsAbstract && typeof(IPrototypeDataSerializer).IsAssignableFrom(t))
+						serializers.Add(Activator.CreateInstance(t) as IPrototypeDataSerializer);
+				}
+			}
+
 			foreach (var instance in serializers)
 			{
 				if (instance.CanBeUsedFor(type))
@@ -37,69 +51,57 @@ namespace UnityTK.Prototypes
 
 		/// <summary>
 		/// Returns the serializable type cache if known for the specified type.
-		/// Serializable type caches are being genearted in <see cref="LazyInit"/> from classes with <see cref="PrototypeDataSerializableAttribute"/> attributes via reflection.
+		/// Will be cached just in time.
 		/// </summary>
 		public static SerializableTypeCache GetSerializableTypeCacheFor(Type type)
 		{
 			SerializableTypeCache cache;
 			if (!typeCache.TryGetValue(type, out cache))
-				return null;
+			{
+				cache = SerializableTypeCache.TryBuild(type);
+				typeCache.Add(type, cache);
+			}
 			return cache;
 		}
 
-		public static SerializableTypeCache LookupSerializableTypeCache(string writtenName, string preferredNamespace)
+		private static void LazyAllTypesInit()
 		{
-			List<SerializableTypeCache> tmp = ListPool<SerializableTypeCache>.Get();
-
-			try
+			if (ReferenceEquals(allTypes, null))
 			{
-				foreach (var cache in typeCache)
+				List<Type> types = new List<Type>();
+				// Init all types cache
+				foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
 				{
-					if (string.Equals(cache.Key.Name, writtenName))
-						tmp.Add(cache.Value);
+					foreach (var type in asm.GetTypes())
+					{
+						types.Add(type);
+					}
 				}
-
-				if (tmp.Count > 0)
-				{
-					foreach (var cache in tmp)
-						if (string.Equals(cache.type.Namespace, preferredNamespace))
-							return cache;
-				}
-
-				return tmp.Count == 0 ? null : tmp[0];
-			}
-			finally
-			{
-				ListPool<SerializableTypeCache>.Return(tmp);
+				allTypes = types.ToArray();
 			}
 		}
 
-		/// <summary>
-		/// Lazy init method to ensure the cache is built.
-		/// </summary>
-		public static void LazyInit()
+		public static SerializableTypeCache GetSerializableTypeCacheFor(string writtenName, string preferredNamespace)
 		{
-			if (wasInitialized)
-				return;
+			Type foundType = null;
+			bool dontDoNamespaceCheck = string.IsNullOrEmpty(preferredNamespace);
+			LazyAllTypesInit();
 
-			foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+			int len = allTypes.Length;
+			for (int i = 0; i < len; i++)
 			{
-				foreach (var type in asm.GetTypes())
+				Type t = allTypes[i];
+				if (t.Name.Equals(writtenName) && (dontDoNamespaceCheck || t.Namespace.Equals(preferredNamespace)))
 				{
-					if (typeof(IPrototype).IsAssignableFrom(type) || type.GetCustomAttributes(true).Any((a) => a.GetType() == typeof(PrototypeDataSerializableAttribute)))
-					{
-						SerializableTypeCache cache = new SerializableTypeCache();
-						cache.Build(type);
-						typeCache.Add(type, cache);
-					}
-					else if (!type.IsAbstract && !type.IsInterface && typeof(IPrototypeDataSerializer).IsAssignableFrom(type))
-					{
-						serializers.Add(Activator.CreateInstance(type) as IPrototypeDataSerializer);
-					}
+					foundType = t;
+					break;
 				}
 			}
 
-			wasInitialized = true;
+			if (!ReferenceEquals(foundType, null))
+				return GetSerializableTypeCacheFor(foundType);
+
+			return null;
 		}
 	}
 }

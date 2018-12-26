@@ -72,38 +72,33 @@ namespace UnityTK.Prototypes
 				debug.Add(elementName, xElement);
 				var fieldData = targetType.GetFieldData(elementName);
 				var fieldType = fieldData.serializableTypeCache;
-				if (fieldType == null)
+				bool isCollection = SerializedCollectionData.IsCollection(fieldData.fieldInfo.FieldType);
+				IPrototypeDataSerializer serializer = PrototypeCaches.GetBestSerializerFor(fieldData.fieldInfo.FieldType);
+
+				if (!ReferenceEquals(serializer, null))
 				{
-					// Not a prototype or data serializable
-
-					// Is this field a collection?
-					if (SerializedCollectionData.IsCollection(fieldData.fieldInfo.FieldType))
+					try
 					{
-						var col = new SerializedCollectionData(fieldData.fieldInfo.FieldType, xElement, this.filename);
-						col.ParseAndLoadData(errors, state);
-						fields.Add(elementName, col);
+						if (!ParsingValidation.SerializerWasFound(xElement, serializer, elementName, targetType == null ? null : targetType.type, fieldType == null ? null : fieldType.type, filename, errors))
+							continue;
 
-						// Collection override action?
-						var collectionOverrideAttrib = xElement.Attribute(PrototypeParser.PrototypeAttributeCollectionOverrideAction);
-						if (!ReferenceEquals(collectionOverrideAttrib, null))
-							collectionOverrideActions.Set(elementName, (CollectionOverrideAction)Enum.Parse(typeof(CollectionOverrideAction), collectionOverrideAttrib.Value));
+						fields.Add(elementName, serializer.Deserialize(fieldData.fieldInfo.FieldType, xElement, state));
 					}
-					// Value type serialized
-					else
+					catch (Exception ex)
 					{
-						try
-						{
-							var serializer = PrototypeCaches.GetBestSerializerFor(fieldData.fieldInfo.FieldType);
-							if (!ParsingValidation.SerializerWasFound(xElement, serializer, elementName, targetType == null ? null : targetType.type, fieldType == null ? null : fieldType.type, filename, errors))
-								continue;
-
-							fields.Add(elementName, serializer.Deserialize(fieldData.fieldInfo.FieldType, xElement, state));
-						}
-						catch (Exception ex)
-						{
-							errors.Add(new ParsingError(ParsingErrorSeverity.ERROR, filename, -1, "Serializer threw exception on field " + elementName + " on type " + targetType.type + ":\n\n" + ex.ToString() + "\n\nSkipping field!"));
-						}
+						errors.Add(new ParsingError(ParsingErrorSeverity.ERROR, filename, -1, "Serializer threw exception on field " + elementName + " on type " + targetType.type + ":\n\n" + ex.ToString() + "\n\nSkipping field!"));
 					}
+				}
+				else if (isCollection)
+				{
+					var col = new SerializedCollectionData(fieldData.fieldInfo.FieldType, xElement, this.filename);
+					col.ParseAndLoadData(errors, state);
+					fields.Add(elementName, col);
+
+					// Collection override action?
+					var collectionOverrideAttrib = xElement.Attribute(PrototypeParser.PrototypeAttributeCollectionOverrideAction);
+					if (!ReferenceEquals(collectionOverrideAttrib, null))
+						collectionOverrideActions.Set(elementName, (CollectionOverrideAction)Enum.Parse(typeof(CollectionOverrideAction), collectionOverrideAttrib.Value));
 				}
 				else
 				{
@@ -114,7 +109,7 @@ namespace UnityTK.Prototypes
 					{
 						fields.Add(elementName, new SerializedPrototypeReference()
 						{
-							name = xElement.Value as string
+							identifier = xElement.Value as string
 						});
 					}
 					else
@@ -128,12 +123,12 @@ namespace UnityTK.Prototypes
 						var classAttrib = xElement.Attribute(PrototypeParser.PrototypeAttributeType);
 						if (!ReferenceEquals(classAttrib, null))
 						{
-							targetType = PrototypeCaches.LookupSerializableTypeCache(classAttrib.Value, state.parameters.standardNamespace);
+							targetType = PrototypeCaches.GetSerializableTypeCacheFor(classAttrib.Value, state.parameters.standardNamespace);
 							typeName = classAttrib.Value;
 						}
 
 						// Field not serializable?
-						if (!ParsingValidation.DataFieldSerializerFound(xElement, targetType, typeName, elementName, filename, errors))
+						if (!ParsingValidation.DataFieldSerializerValid(xElement, targetType, typeName, elementName, filename, errors))
 							continue;
 
 						// Resolve field name type
@@ -212,8 +207,11 @@ namespace UnityTK.Prototypes
 					value = fieldInfo.fieldInfo.GetValue(obj);
 					
 					CollectionOverrideAction action;
-					if (!ReferenceEquals(value, null) && collectionOverrideActions.TryGetValue(field.Key, out action))
+					if (!ReferenceEquals(value, null))
 					{
+						if (!collectionOverrideActions.TryGetValue(field.Key, out action))
+							action = CollectionOverrideAction.Combine; // Always default to comibining
+
 						switch (action)
 						{
 							case CollectionOverrideAction.Combine: value = col.CombineWithInNew(value); break;
@@ -240,7 +238,7 @@ namespace UnityTK.Prototypes
 			{
 				var v = field.Value as SerializedPrototypeReference;
 				if (!ReferenceEquals(v, null))
-					yield return v.name;
+					yield return v.identifier;
 
 				var sub = field.Value as SerializedData;
 				if (!ReferenceEquals(sub, null))

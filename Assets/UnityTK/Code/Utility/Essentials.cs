@@ -295,5 +295,10 @@ namespace UnityTK
 		{
 			return ArrayAccessor<T>.Getter(list);
 		}
+
+		public static bool IsRunningHeadless()
+		{
+			return SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null || Application.isBatchMode;
+		}
     }
 }

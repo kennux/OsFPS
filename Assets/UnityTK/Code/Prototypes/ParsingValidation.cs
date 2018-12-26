@@ -12,11 +12,12 @@ namespace UnityTK.Prototypes
 	{
 		// TODO: string.Format()
 
-		public static bool DataFieldSerializerFound(XElement xElement, SerializableTypeCache typeCache, string typeName, string fieldName, string filename, List<ParsingError> errors)
+		public static bool DataFieldSerializerValid(XElement xElement, SerializableTypeCache typeCache, string typeName, string fieldName, string filename, List<ParsingError> errors)
 		{
 			if (ReferenceEquals(typeCache, null))
 			{
-				string msg = string.Format("Field '{0}' with unknown type {1} - unknown by the serializer cache! Are you missing {2} attribute?", fieldName, typeName, nameof(PrototypeDataSerializableAttribute));
+				// TODO: Explanation - why unserializable!?
+				string msg = string.Format("Field '{0}' with unserializeable type {1}!", fieldName, typeName);
 				errors.Add(new ParsingError(ParsingErrorSeverity.ERROR, filename, (xElement as IXmlLineInfo).LineNumber, msg));
 				return false;
 			}

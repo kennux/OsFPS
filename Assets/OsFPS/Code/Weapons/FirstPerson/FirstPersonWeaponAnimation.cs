@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityTK;
 
 namespace OsFPS
 {
@@ -16,71 +17,71 @@ namespace OsFPS
         [ContextMenu("Set Hips state")]
         private void SetHipsState()
         {
-            this.hipsOriginPosition = this.transform.localPosition;
-            this.hipsOriginRotation = this.transform.localRotation;
+            this.hipsOrigin.position = this.transform.localPosition;
+            this.hipsOrigin.rotation = this.transform.localRotation;
         }
 
         [ContextMenu("Set Zoomed state")]
         private void SetZoomedState()
         {
-            this.zoomedOriginPosition = this.transform.localPosition;
-            this.zoomedOriginRotation = this.transform.localRotation;
+            this.zoomedHipsOrigin.position = this.transform.localPosition;
+            this.zoomedHipsOrigin.rotation = this.transform.localRotation;
         }
 
         [ContextMenu("Set Colliding state")]
         private void SetCollidingState()
         {
-            this.collidingOriginPosition = this.transform.localPosition;
-            this.collidingOriginRotation = this.transform.localRotation;
+            this.collidingHipsOrigin.position = this.transform.localPosition;
+            this.collidingHipsOrigin.rotation = this.transform.localRotation;
         }
 
         [ContextMenu("Set Running state")]
         private void SetRunningState()
         {
-            this.runningOriginPosition = this.transform.localPosition;
-            this.runningOriginRotation = this.transform.localRotation;
+            this.runningHipsOrigin.position = this.transform.localPosition;
+            this.runningHipsOrigin.rotation = this.transform.localRotation;
         }
 
         [ContextMenu("Set Prone state")]
         private void SetProneState()
         {
-            this.proneOriginPosition = this.transform.localPosition;
-            this.proneOriginRotation = this.transform.localRotation;
+            this.proneHipsOrigin.position = this.transform.localPosition;
+            this.proneHipsOrigin.rotation = this.transform.localRotation;
         }
 
         [ContextMenu("Load Hips state")]
         private void LoadHipsState()
         {
-            this.transform.localPosition = this.hipsOriginPosition;
-            this.transform.localRotation = this.hipsOriginRotation;
+            this.transform.localPosition = this.hipsOrigin.position;
+            this.transform.localRotation = this.hipsOrigin.rotation;
         }
 
         [ContextMenu("Load Zoomed state")]
         private void LoadZoomedState()
         {
-            this.transform.localPosition = this.zoomedOriginPosition;
-            this.transform.localRotation = this.zoomedOriginRotation;
+            this.transform.localPosition = this.zoomedHipsOrigin.position;
+            this.transform.localRotation = this.zoomedHipsOrigin.rotation;
         }
 
         [ContextMenu("Load Colliding state")]
         private void LoadCollidingState()
         {
-            this.transform.localPosition = this.collidingOriginPosition;
-            this.transform.localRotation = this.collidingOriginRotation;
+            this.transform.localPosition = this.collidingHipsOrigin.position;
+            this.transform.localRotation = this.collidingHipsOrigin.rotation;
         }
 
         [ContextMenu("Load Running state")]
         private void LoadRunningState()
         {
-            this.transform.localPosition = this.runningOriginPosition;
-            this.transform.localRotation = this.runningOriginRotation;
+            this.transform.localPosition = this.runningHipsOrigin.position;
+            this.transform.localRotation = this.runningHipsOrigin.rotation;
         }
 
         [ContextMenu("Load Prone state")]
         private void LoadProneState()
         {
-            this.transform.localPosition = this.proneOriginPosition;
-            this.transform.localRotation = this.proneOriginRotation;
+            this.transform.localPosition = this.proneHipsOrigin.position;
+            this.transform.localRotation = this.proneHipsOrigin.rotation;
         }
 
 #endif
@@ -95,29 +96,32 @@ namespace OsFPS
         }
         private FirstPersonWeapon _weapon;
 
-        [Header("Spring")]
-        public Vector3 positionalStiffness;
-        public Vector3 rotationalStiffness;
-        public Vector3 positionalDamping;
-        public Vector3 rotationalDamping;
-        public Vector3 zoomedPositionalStiffness;
-        public Vector3 zoomedRotationalStiffness;
-        public Vector3 zoomedPositionalDamping;
-        public Vector3 zoomedRotationalDamping;
+		[System.Serializable]
+		public struct SpringSettings
+		{
+			public Vector3 stiffness;
+			public Vector3 damping;
+		}
 
-        [Header("Origins")]
-        [FormerlySerializedAs("hipsOrigin")]
-        public Vector3 hipsOriginPosition;
-        public Quaternion hipsOriginRotation;
-        public Vector3 runningOriginPosition;
-        public Quaternion runningOriginRotation;
-        [FormerlySerializedAs("zoomedOrigin")]
-        public Vector3 zoomedOriginPosition;
-        public Quaternion zoomedOriginRotation;
-        public Vector3 collidingOriginPosition;
-        public Quaternion collidingOriginRotation;
-        public Vector3 proneOriginPosition;
-        public Quaternion proneOriginRotation;
+		[System.Serializable]
+		public struct OriginSettings
+		{
+			public Vector3 position;
+			public Quaternion rotation;
+		}
+		
+        [Header("Springs")]
+        public SpringSettings _positionSpring;
+        public SpringSettings rotationSpring;
+        public SpringSettings zoomedPositionSpring;
+        public SpringSettings zoomedRotationSpring;
+
+		[Header("Origins")]
+		public OriginSettings hipsOrigin;
+		public OriginSettings runningHipsOrigin;
+		public OriginSettings zoomedHipsOrigin;
+		public OriginSettings collidingHipsOrigin;
+		public OriginSettings proneHipsOrigin;
 
         [Header("Movement animation")]
         [FormerlySerializedAs("footstepForce")]
@@ -174,8 +178,8 @@ namespace OsFPS
             this.weapon.footstep.handler += this.OnFootstep;
 
             // Springs
-            this.eulerSpring = new SpringPhysics(this.rotationalStiffness, this.rotationalDamping);
-            this.positionSpring = new SpringPhysics(this.positionalStiffness, this.positionalDamping);
+            this.eulerSpring = new SpringPhysics(this.rotationSpring.stiffness, this.rotationSpring.damping);
+            this.positionSpring = new SpringPhysics(this._positionSpring.stiffness, this._positionSpring.damping);
         }
 
         public void OnEnable()
@@ -197,7 +201,7 @@ namespace OsFPS
         public void FixedUpdate()
         {
             // Align collider
-            this.weaponCollider.transform.position = this.transform.parent.TransformPoint(this.weapon.weaponHandler.isZoomed ? this.zoomedOriginPosition : this.hipsOriginPosition);
+            this.weaponCollider.transform.position = this.transform.parent.TransformPoint(this.weapon.weaponHandler.isZoomed ? this.zoomedHipsOrigin.position : this.hipsOrigin.position);
             this.weaponCollider.transform.rotation = this.transform.parent.rotation;
 
             // Determine state
@@ -207,10 +211,10 @@ namespace OsFPS
             bool isMoving = this.weapon.weaponHandler.entity.model.motorMovement.Get().magnitude > 0.01f;
 
             // Spring update
-            this.positionSpring.damping = isZoomed ? this.zoomedPositionalDamping : this.positionalDamping;
-            this.positionSpring.stiffness = isZoomed ? this.zoomedPositionalStiffness : this.zoomedPositionalStiffness;
-            this.eulerSpring.damping = isZoomed ? this.zoomedRotationalDamping : this.rotationalDamping;
-            this.eulerSpring.stiffness = isZoomed ? this.zoomedRotationalStiffness : this.rotationalStiffness;
+            this.positionSpring.damping = isZoomed ? this.zoomedPositionSpring.damping : this._positionSpring.damping;
+            this.positionSpring.stiffness = isZoomed ? this.zoomedPositionSpring.stiffness : this._positionSpring.stiffness;
+            this.eulerSpring.damping = isZoomed ? this.zoomedRotationSpring.damping : this.rotationSpring.damping;
+            this.eulerSpring.stiffness = isZoomed ? this.zoomedRotationSpring.stiffness : this.rotationSpring.stiffness;
             this.positionSpring.FixedUpdate();
             this.eulerSpring.FixedUpdate();
 
@@ -301,28 +305,28 @@ namespace OsFPS
 
             if (isColliding)
             {
-                position = this.collidingOriginPosition;
-                rotation = this.collidingOriginRotation;
+                position = this.collidingHipsOrigin.position;
+                rotation = this.collidingHipsOrigin.rotation;
             }
             else if (isRunning)
             {
-                position = this.runningOriginPosition;
-                rotation = this.runningOriginRotation;
+                position = this.runningHipsOrigin.position;
+                rotation = this.runningHipsOrigin.rotation;
             }
             else if (isZoomed)
             {
-                position = this.zoomedOriginPosition;
-                rotation = this.zoomedOriginRotation;
+                position = this.zoomedHipsOrigin.position;
+                rotation = this.zoomedHipsOrigin.rotation;
             }
             else if (isProne)
             {
-                position = this.proneOriginPosition;
-                rotation = this.proneOriginRotation;
+                position = this.proneHipsOrigin.position;
+                rotation = this.proneHipsOrigin.rotation;
             }
             else
             {
-                position = this.hipsOriginPosition;
-                rotation = this.hipsOriginRotation;
+                position = this.hipsOrigin.position;
+                rotation = this.hipsOrigin.rotation;
             }
         }
         /// <summary>
